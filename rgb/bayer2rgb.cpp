@@ -190,6 +190,36 @@ void save_rgb(std::string file_name, short*** rgb, int width, int height)
     fout.close();
 }
 
+void normalizeRGB(short*** rgb, int width, int height)
+{
+    short maxR = 0;
+    short maxG = 0;
+    short maxB = 0;
+
+    for (int i=0;i<height; i++)
+    {
+        for (int j=0;j<width; j++)
+        {
+            if (maxR < rgb[RED][i][j])
+                maxR = rgb[RED][i][j];
+            if (maxG < rgb[GREEN][i][j])
+                maxG = rgb[GREEN][i][j];
+            if (maxB = rgb[BLUE][i][j])
+                maxB = rgb[BLUE][i][j];
+        }
+    }
+
+    for (int i=0;i<height; i++)
+    {
+        for (int j=0;j<width; j++)
+        {
+            rgb[RED][i][j] = short((float)(rgb[RED][i][j])/maxR*255.0);
+            rgb[GREEN][i][j] = short((float)(rgb[GREEN][i][j])/maxG*255.0);
+            rgb[BLUE][i][j] = short((float)(rgb[BLUE][i][j])/maxB*255.0);
+        }
+    }
+}
+
 
 int main (int argc, char* argv[]) // file_name, width, height, output_file
 {
@@ -201,6 +231,7 @@ int main (int argc, char* argv[]) // file_name, width, height, output_file
     //read in file
     short** buff = load_raw_file(input_file, width, height);
     short*** rgb = raw_to_RGB(buff, width, height);
+    normalizeRGB(rgb, width, height);
     save_rgb(output_file, rgb, width, height);
     return 0;
 }
